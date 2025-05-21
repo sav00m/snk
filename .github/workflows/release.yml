@@ -7,7 +7,7 @@ on:
         description: |
           New version for the release
           If the version is in format <major>.<minor>.<patch> a new release is emitted.
-          Otherwise for other format ( for example <major>.<minor>.<patch>-beta.1 ), a prerelease is emitted.
+          Otherwise for other format (for example <major>.<minor>.<patch>-beta.1), a prerelease is emitted.
         default: "0.0.1"
         required: true
         type: string
@@ -43,7 +43,7 @@ jobs:
 
       - name: update action.yml to point to the newly created docker image
         run: |
-          sed -i "s/image: .*/image: docker:\/\/platane\/snk@${{ steps.docker-build.outputs.digest }}/" action.yml
+          sed -i "s|image: .*|image: docker://platane/snk@${{ steps.docker-build.outputs.digest }}|" action.yml
 
       - uses: oven-sh/setup-bun@v1
 
@@ -57,6 +57,10 @@ jobs:
 
       - name: bump package version
         run: npm version --no-git-tag-version --new-version ${{ github.event.inputs.version }}
+
+      - name: authenticate git with github token
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf https://github.com/
 
       - name: push new build, tag version and push
         id: push-tags
