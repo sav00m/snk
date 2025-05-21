@@ -58,9 +58,9 @@ jobs:
       - name: bump package version
         run: npm version --no-git-tag-version --new-version ${{ github.event.inputs.version }}
 
-      - name: authenticate git with github token
+      - name: set authenticated git remote
         run: |
-          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf https://github.com/
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
       - name: push new build, tag version and push
         id: push-tags
